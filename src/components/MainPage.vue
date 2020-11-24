@@ -81,8 +81,8 @@ import web3 from '@/web3'
           }
           this.image = result[0].path
           this.buffer = null
-
-          await ipfsx.methods.setImageHash(result[0].path).send({from : this.Account})
+        
+          await ipfsx.methods.setImageHash(result[0].path).send({from : this.Account } )
           this.imageIndex = await ipfsx.methods.getImageIndex().call({ from : this.Account })
 
           this.imagesHashes.push(result[0].path)
@@ -95,11 +95,11 @@ import web3 from '@/web3'
       }
     },
     async mounted(){
-      
+
       this.Account = (await web3.eth.getAccounts())[0]
       this.imageIndex = await ipfsx.methods.getImageIndex().call({ from : (await web3.eth.getAccounts())[0] })
-
       for (let index = 0; index < this.imageIndex; index++) {
+        
         this.imagesHashes.push( await ipfsx.methods.getImageHash(index).call({ from : this.Account }) )
       }
 
