@@ -6,16 +6,22 @@ contract IPFS{
     
     uint public imageIndex;
     mapping(uint => string) public imageHashes;
-    mapping(address => string []) public imageHashes2;
+    mapping(address => Info ) public imageHashes2;
     
     uint public userIndex;
     mapping(uint => address) public users;
+    address [] public users2;
     
+    
+    struct Info{
+        string [] imageHashes;
+        bool exists;
+    }
     
     // modifiers
         
-    modifier RegisteredUser{
-        require(imageHashes2[msg.sender].length != 0  );
+    modifier userExistency(){
+        require(imageHashes2[msg.sender].exists == true );
         _;
     }
         
@@ -30,21 +36,32 @@ contract IPFS{
         imageIndex ++;
     }
     
-    function registerUser(address _userAddress) public{
+    function registerUser(address _userAddress ) public {
+        // veryfy user not in the array
+        require(imageHashes2[msg.sender].exists == !true );
         
+        string[] memory emtyImageArray;
+        imageHashes2[_userAddress] = Info( emtyImageArray , true);
+    }
+    
+    function loginUser() public view returns(bool){
+        if(imageHashes2[msg.sender].exists == true){
+            return true;
+        }else{
+            return false;
+        }
     }
     
     function setImageHash_(string _imageHash , address _imageOwner) public{
-        imageHashes2[_imageOwner].push(_imageHash);
-        imageIndex ++;
+        imageHashes2[_imageOwner].imageHashes.push(_imageHash);
     }
     
     function getImageHash(uint _imageIndex) public view returns(string ){
         return imageHashes[_imageIndex];
     }
     
-    function getImageHash_(address _imageOwner) public view returns(string [] ){
-        return imageHashes2[_imageOwner];
+    function getImageHash_(address _imageOwner) userExistency() public view returns(string [] ){
+        return imageHashes2[_imageOwner].imageHashes;
     }
     
     function getImageIndex() public view returns(uint){
