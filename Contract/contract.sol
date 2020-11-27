@@ -4,15 +4,8 @@ pragma experimental ABIEncoderV2;
 contract IPFS{
     address public manager;
     
-    uint public imageIndex;
-    mapping(uint => string) public imageHashes;
-    mapping(address => Info ) public imageHashes2;
-    
-    uint public userIndex;
-    mapping(uint => address) public users;
-    address [] public users2;
-    
-    
+    mapping(address => Info ) public imageHashes;
+ 
     struct Info{
         string [] imageHashes;
         bool exists;
@@ -21,7 +14,7 @@ contract IPFS{
     // modifiers
         
     modifier userExistency(){
-        require(imageHashes2[msg.sender].exists == true );
+        require(imageHashes[msg.sender].exists == true );
         _;
     }
         
@@ -31,41 +24,29 @@ contract IPFS{
         manager = msg.sender;
     }
     
-    function setImageHash(string _imageHash) public{
-        imageHashes[imageIndex] = _imageHash;
-        imageIndex ++;
-    }
-    
-    function registerUser(address _userAddress ) public {
+    function registerUser( ) public {
         // veryfy user not in the array
-        require(imageHashes2[msg.sender].exists == !true );
+        require(imageHashes[msg.sender].exists == !true );
         
         string[] memory emtyImageArray;
-        imageHashes2[_userAddress] = Info( emtyImageArray , true);
+        imageHashes[msg.sender] = Info( emtyImageArray , true);
     }
     
     function loginUser() public view returns(bool){
-        if(imageHashes2[msg.sender].exists == true){
+        if(imageHashes[msg.sender].exists == true){
             return true;
         }else{
             return false;
         }
     }
     
-    function setImageHash_(string _imageHash , address _imageOwner) public{
-        imageHashes2[_imageOwner].imageHashes.push(_imageHash);
+    function setImageHash(string _imageHash) public{
+        imageHashes[msg.sender].imageHashes.push(_imageHash);
+    }
+
+    function getImageHashes() userExistency() public view returns(string [] ){
+        return imageHashes[msg.sender].imageHashes;
     }
     
-    function getImageHash(uint _imageIndex) public view returns(string ){
-        return imageHashes[_imageIndex];
-    }
-    
-    function getImageHash_(address _imageOwner) userExistency() public view returns(string [] ){
-        return imageHashes2[_imageOwner].imageHashes;
-    }
-    
-    function getImageIndex() public view returns(uint){
-        return imageIndex;
-    }
     
 }

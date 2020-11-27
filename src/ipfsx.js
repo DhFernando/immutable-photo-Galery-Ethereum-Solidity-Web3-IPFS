@@ -1,6 +1,15 @@
 import web3 from './web3'
-const address = "0x941dc1eCb89a010763d425446876F63C89967420"
+const address = "0x5374bB394b0AfEEf1C3d38b1a07E9E1117352726"
 const abi = [
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "registerUser",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
 	{
 		"constant": false,
 		"inputs": [
@@ -23,31 +32,12 @@ const abi = [
 	},
 	{
 		"constant": true,
-		"inputs": [
-			{
-				"name": "_imageIndex",
-				"type": "uint256"
-			}
-		],
-		"name": "getImageHash",
-		"outputs": [
-			{
-				"name": "",
-				"type": "string"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
 		"inputs": [],
-		"name": "getImageIndex",
+		"name": "getImageHashes",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256"
+				"type": "string[]"
 			}
 		],
 		"payable": false,
@@ -59,14 +49,14 @@ const abi = [
 		"inputs": [
 			{
 				"name": "",
-				"type": "uint256"
+				"type": "address"
 			}
 		],
 		"name": "imageHashes",
 		"outputs": [
 			{
-				"name": "",
-				"type": "string"
+				"name": "exists",
+				"type": "bool"
 			}
 		],
 		"payable": false,
@@ -76,11 +66,11 @@ const abi = [
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "imageIndex",
+		"name": "loginUser",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256"
+				"type": "bool"
 			}
 		],
 		"payable": false,
@@ -91,6 +81,58 @@ const abi = [
 		"constant": true,
 		"inputs": [],
 		"name": "manager",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "userIndex",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "users",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "users2",
 		"outputs": [
 			{
 				"name": "",
