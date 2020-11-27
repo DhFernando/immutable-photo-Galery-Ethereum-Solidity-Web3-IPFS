@@ -36,12 +36,12 @@ contract IPFS{
         imageIndex ++;
     }
     
-    function registerUser(address _userAddress ) public {
+    function registerUser( ) public {
         // veryfy user not in the array
         require(imageHashes2[msg.sender].exists == !true );
         
         string[] memory emtyImageArray;
-        imageHashes2[_userAddress] = Info( emtyImageArray , true);
+        imageHashes2[msg.sender] = Info( emtyImageArray , true);
     }
     
     function loginUser() public view returns(bool){
