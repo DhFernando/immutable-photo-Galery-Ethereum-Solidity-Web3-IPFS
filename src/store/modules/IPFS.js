@@ -2,11 +2,11 @@
 // import ipfs from '@/ipfs'
 
 const state = {
-   
+   login : false
   };
 
   const getters = {
-     
+    login:(state) => { return state.login },
   };
   
   const actions = {
