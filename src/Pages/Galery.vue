@@ -1,11 +1,6 @@
 <template>
   <v-container class="d-flex justify-center ">
     <v-card  flat tile >
-      <v-row>
-        <v-col cols="12" > 
-          <h2>Upload Images to IPFS *AND* Store in Smart Contract</h2>
-        </v-col>
-      </v-row>
       <v-row v-if="image != null" class="mt-5 mb-5 d-flex justify-center ">
         <v-img contain lazy-src="https://picsum.photos/id/11/10/6"
               max-height="219"
@@ -15,7 +10,7 @@
        
       </v-row>
       <v-row class="mt-5 mb-5 d-flex justify-center ">
-        <div v-for="(  imageHash , index ) in imagesHashes" :key="index"  class="mx-3">
+        <div v-for="(  imageHash , index ) in imageHashes" :key="index"  class="mx-3">
           <v-img  contain lazy-src="https://picsum.photos/id/11/10/6"
                 max-height="50"
                 max-width="50"
@@ -43,9 +38,6 @@
 <script>
 const ipfsClient = require('ipfs-http-client')
 const _ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
-import ipfsx from '@/ipfsx'
-import web3 from '@/web3'
- 
 
   export default {
     name: 'Galery',
@@ -54,26 +46,22 @@ import web3 from '@/web3'
       image:null,
       buffer : null,
       imageIndex:null,
-      Account : null,
-      imagesHashes : [],
       uploading : false
     }),
     methods:{
       onChange(File) { 
         this.buffer = null
         if(typeof File[0] !== 'undefined'){
-          
           const file = File[0]
           const reader = new window.FileReader()
           reader.readAsArrayBuffer(file)
           reader.onloadend = () => {
-              this.buffer = Buffer(reader.result)
-                
+              this.buffer = Buffer(reader.result) 
           }
         }
       },
 
-      onSubmit(){ 
+      onSubmit(){
         console.log("submitting Data");
         this.uploading = true
         _ipfs.add(this.buffer ,async (error , result) =>{
@@ -83,13 +71,12 @@ import web3 from '@/web3'
           }
           this.image = result[0].path
           this.buffer = null
-        
-          await ipfsx.methods.setImageHash(result[0].path).send({from : this.Account } )
-          this.imageIndex = await ipfsx.methods.getImageIndex().call({ from : this.Account })
-
-          this.imagesHashes.push(result[0].path)
+            
+          this.$store.dispatch('storeImage' , result[0].path)
+      
           this.uploading  = false
         })
+        
       },
 
       changeImage(_imageHash){
@@ -97,16 +84,10 @@ import web3 from '@/web3'
       }
     },
     async mounted(){
-
-      this.Account = (await web3.eth.getAccounts())[0]
-      this.imageIndex = await ipfsx.methods.getImageIndex().call({ from : (await web3.eth.getAccounts())[0] })
-      for (let index = 0; index < this.imageIndex; index++) {
-        
-        this.imagesHashes.push( await ipfsx.methods.getImageHash(index).call({ from : this.Account }) )
-      }
-
-      this.image = this.imagesHashes[0]
-         
-    }
+      this.$store.dispatch('getImageHashes')  
+    },
+    computed: {
+      imageHashes(){ return this.$store.getters.imgeHashes }
+    },
   }
 </script>
